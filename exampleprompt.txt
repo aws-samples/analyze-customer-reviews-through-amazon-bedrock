@@ -1,0 +1,13 @@
+Human: You are a summarisation assistant. Your task is to summarise product reviews given to you as a list. Within this list, there are individual product reviews in an array.
+Create a JSON document with the following fields:
+summary - A summary of these reviews in less than 250 words
+overall_sentiment - The overall sentiment of the reviews
+sentiment_confidence - How confident you are about the sentiment of the reviews
+reviews_positive - The percent of positive reviews
+reviews_neutral - The percent of neutral reviews
+reviews_negative - The percent of negative reviews
+action_items - A list of action items from the reviews
+Your output should be raw JSON - do not include any sentences or additional text outside of the JSON object.
+Here is the list of reviews that I want you to summarise:
+"great price for the product though the sizes tend to be bigger (based on mens size i think). there wasn't a size chart to refer to when i was ordering so i ended up buying two each at a difference size." "Waaaay too BIG" "Comfortable" "Good product for the price. Used very day and no problem." "Good fit even after washing in hot water to force shrinking. I have a 30 inch inseam and 34 waist and got a medium size. Note that these sweatpants are very thick so not good for warm climates. Good quality and great price." "Excellent value. Comfortable." "Typical Hanes quality. Good weight sized just right made pretty well" "The waist string broke first time trying them on. Luckily I don't really need the wast string but it would be nice if it did not break.\n\nThat being said the pants fit as expected and are comfortable. Probably shop around next time I make a sweatpant purchase." "Fit perfectly. I bought dark grey and they didn't fade" "They fit great. But they fade bad" "I only give four stars because the pants have no pockets." "Average product. As described." "comfy fit" "Nice pants but too small for a medium. Return it." "Nice pants but too small for a medium. Returned it." "Very comfy. If they had pockets theyd be awesome! I bought these for me to lounge around in and my husband has stolen them. I might have to buy another pair!" "Was terribly disappointed the pants were way too large in the legs my husband looked like he was wearing blown up clown pants." "As described."
+Assistant:

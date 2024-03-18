@@ -1,0 +1,183 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Parameters:
+  NotificationEmail:
+    Type: String
+    Description: Specify and email address to receive daily reports.
+
+Resources:
+  AnalysisTable:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      BillingMode: "PAY_PER_REQUEST"
+      AttributeDefinitions:
+        - AttributeName: "date"
+          AttributeType: "S"
+        - AttributeName: "product"
+          AttributeType: "S"
+      KeySchema:
+        - AttributeName: "date"
+          KeyType: "HASH"
+        - AttributeName: "product"
+          KeyType: "RANGE"
+
+  OrchestratorLambdaRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Policies:
+        - PolicyName: LambdaExecution
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 'bedrock:InvokeModel'
+                Resource:
+                  - "arn:aws:bedrock:*::foundation-model/anthropic.claude-3-sonnet-20240229-v1:0"
+              - Effect: Allow
+                Action:
+                 - 'dynamodb:PutItem'
+                Resource:
+                  - !GetAtt AnalysisTable.Arn
+      ManagedPolicyArns: 
+        - "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+
+  OrchestratorLambda:
+    Type: 'AWS::Lambda::Function'
+    Properties:
+      Role:
+        !GetAtt OrchestratorLambdaRole.Arn
+      Runtime: "python3.12"
+      Timeout: 60
+      Handler: "orchestrator-lambda.lambda_handler"
+      Environment:
+        Variables:
+          DYNAMODB_TABLE: !Ref AnalysisTable
+      Code: orchestrator-lambda.py
+
+  OrchestratorLambdaPermission:
+    Type: 'AWS::Lambda::Permission'
+    Properties:
+      FunctionName: !GetAtt OrchestratorLambda.Arn
+      Action: lambda:InvokeFunction
+      Principal: s3.amazonaws.com
+      SourceAccount: !Ref 'AWS::AccountId'
+
+  ProductReviewFiles:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      NotificationConfiguration:
+        LambdaConfigurations:
+          - Event: "s3:ObjectCreated:*"
+            Function: !GetAtt OrchestratorLambda.Arn
+
+  ProductReviewFilesPolicy:
+    Type: 'AWS::S3::BucketPolicy'
+    Properties:
+      Bucket: !Ref ProductReviewFiles
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Action:
+              - 's3:GetObject'
+            Resource:
+              - !Join
+                - ""
+                - - !GetAtt ProductReviewFiles.Arn
+                  - "/*"
+            Principal:
+              AWS:
+                - !GetAtt OrchestratorLambdaRole.Arn
+
+  DailyReportFiles:
+    Type: 'AWS::S3::Bucket'
+
+  NotificationTopic:
+    Type: 'AWS::SNS::Topic'
+    Properties:
+      KmsMasterKeyId: "alias/aws/sns"
+      Subscription:
+        - Endpoint:
+            Ref: NotificationEmail
+          Protocol: "email"
+
+  NotificationLambdaRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Policies:
+        - PolicyName: LambdaExecution
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                 - 'dynamodb:Query'
+                Resource:
+                  - !GetAtt AnalysisTable.Arn
+              - Effect: Allow
+                Action:
+                 - 's3:PutObject'
+                 - 's3:GetObject'
+                Resource:
+                  - !Join
+                    - ""
+                    - - !GetAtt DailyReportFiles.Arn
+                      - "/*"
+              - Effect: Allow
+                Action:
+                  - 'SNS:Publish'
+                Resource:
+                  !Ref NotificationTopic
+      ManagedPolicyArns: 
+        - "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+
+  NotificationLambda:
+    Type: 'AWS::Lambda::Function'
+    Properties:
+      Role:
+        !GetAtt NotificationLambdaRole.Arn
+      Runtime: "python3.12"
+      Timeout: 60
+      Handler: "notification-lambda.lambda_handler"
+      Environment:
+        Variables:
+          DYNAMODB_TABLE: !Ref AnalysisTable
+          S3_BUCKET: !Ref DailyReportFiles
+          SNS_TOPIC: !Ref NotificationTopic
+      Code: notification-lambda.py
+
+  DailyTrigger:
+    Type: 'AWS::Events::Rule'
+    Properties:
+      Name: 'ProductReviewAnalysisNotifications'
+      ScheduleExpression: 'cron(0 0 * * ? *)'
+      Targets:
+        - Id: 'NotificationLambdaTarget'
+          Arn: !GetAtt NotificationLambda.Arn
+
+  DailyTriggerPermission:
+    Type: 'AWS::Lambda::Permission'
+    Properties:
+      FunctionName: !GetAtt NotificationLambda.Arn
+      Action: 'lambda:InvokeFunction'
+      Principal: 'events.amazonaws.com'
+      SourceArn: !GetAtt DailyTrigger.Arn
