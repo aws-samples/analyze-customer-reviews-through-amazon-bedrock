@@ -34,7 +34,7 @@ This solution uses Anthropic’s Claude model through Amazon Bedrock to analyze 
 9. Optionally, data stored on DynamoDB can be used to build business dashboards to monitor the customer sentiment about products or services over time.
 
 
-### Cost
+## Cost
 
 _You are responsible for the cost of the AWS services used while running this Guidance. As of November 2023, the cost for running this Guidance with the default settings in the US West 2 (Oregon) is approximately *TODO* per month for processing 1000 products each month._
 
@@ -95,3 +95,12 @@ See the Bedrock [product page](https://aws.amazon.com/bedrock/) for more resourc
 ## Cleanup
 
 The provisioned infrastructure can be deleted by deleting the CloudFormation stack. This will not remove any S3 buckets that are not empty, so it will be necessary to delete these from the S3 console.
+
+
+## Security
+
+See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more information.
+
+## License
+
+This library is licensed under the MIT-0 License. See the [LICENSE](LICENSE) file.
