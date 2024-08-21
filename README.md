@@ -1,4 +1,4 @@
-# Generating Product Descriptions with Bedrock
+# Analyzing Customer Reviews through Amazon Bedrock
 
 This solution creates a serverless workflow that analyses product reviews using the managed generative AI service, Amazon Bedrock. The analysis is stored in a format that can be easily visualised using Business Intelligence tools, as well as being emailed to a recipient daily.
 
@@ -100,6 +100,14 @@ The provisioned infrastructure can be deleted by deleting the CloudFormation sta
 ## Security
 
 See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more information.
+
+
+## Authors
+
+Rajesh Sripathi\
+Alex Clifton\
+Huma Zafar
+
 
 ## License
 
