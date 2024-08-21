@@ -5,14 +5,14 @@ This solution creates a serverless workflow that analyses product reviews using 
 ## Table of Contents
 
 1. [Overview](#overview)
-    - [Cost](#cost)
-2. [Prerequisites](#prerequisites)
-3. [Deployment Steps](#deployment-steps)
-4. [Deployment Validation](#deployment-validation)
-5. [Running the Guidance](#running-the-guidance)
-6. [Next Steps](#next-steps)
-7. [Cleanup](#cleanup)
-8. [Additional considerations and limitations](#additional-considerations-and-limitations)
+2. [Cost](#cost)
+3. [Prerequisites](#prerequisites)
+4. [Deployment Steps](#deployment-steps)
+5. [Deployment Validation](#deployment-validation)
+6. [Running the Guidance](#running-the-guidance)
+7. [Next Steps](#next-steps)
+8. [Cleanup](#cleanup)
+9. [LICENSE](#LICENSE)
 
 
 ## Overview
