@@ -36,9 +36,9 @@ This solution uses Anthropic’s Claude model through Amazon Bedrock to analyze 
 
 ## Cost
 
-_You are responsible for the cost of the AWS services used while running this Guidance. As of November 2023, the cost for running this Guidance with the default settings in the US West 2 (Oregon) is approximately *TODO* per month for processing 1000 products each month._
+_You are responsible for the cost of the AWS services used while running this solution. As of November 2023, the cost for running this services used in this solution, with the default settings in the US West 2 (Oregon)_
 
-This guidance includes the AWS services S3, Lambda, Bedrock, DynamoDB, EventBridge and SNS with costs as follows:
+This solution includes the AWS services S3, Lambda, Bedrock, DynamoDB, EventBridge and SNS with costs as follows:
 
 - S3: $0.023 per GB (for the first 50 TB) for storage, $0 for the first 100GB transferred out per month
 - Lambda: $0 for the first one million requests per month, $0.0000166667 per GB second thereafter
