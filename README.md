@@ -36,9 +36,7 @@ This solution uses Anthropic’s Claude model through Amazon Bedrock to analyze 
 
 ## Cost
 
-_You are responsible for the cost of the AWS services used while running this solution. As of November 2023, the cost for running this services used in this solution, with the default settings in the US West 2 (Oregon)_
-
-This solution includes the AWS services S3, Lambda, Bedrock, DynamoDB, EventBridge and SNS with costs as follows:
+_You are responsible for the cost of the AWS services used while running this solution. As of November 2023, the cost for running the services used in this solution, with the default settings in the US West 2 (Oregon) are as follows:_
 
 - S3: $0.023 per GB (for the first 50 TB) for storage, $0 for the first 100GB transferred out per month
 - Lambda: $0 for the first one million requests per month, $0.0000166667 per GB second thereafter
@@ -46,6 +44,7 @@ This solution includes the AWS services S3, Lambda, Bedrock, DynamoDB, EventBrid
 - DynamoDB: $0 for the first 25 GB stored per month, $0.25 per GB thereafter, plus $1.25 per million write request units and $0.25 per million read request units
 - EventBridge: $0 for the first 14 million scheduled invocations per month, $1.00 per million thereafter
 - SNS: First 1 million Amazon SNS requests per month are free, $0.50 per 1 million requests thereafter plus 1,000 email notifications for free each month, $2.00 per 100,000 thereafter
+
 
 ## Prerequisites
 
@@ -59,6 +58,7 @@ You will also need to request access to Anthropic Claude 3 on Amazon Bedrock in 
 
 Additionally, you will need the AWS CLI installed to package the CloudFormation template.
 See [Get started with the AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html) to install and configure the CLI.
+
 
 ## Deployment Steps
 
@@ -75,18 +75,21 @@ The packaged template file can then be deployed:
 3. On the next page, specify a name for the stack and an email to receive notifications at
 4. Confirm the details on the next two pages and select 'Submit'
 
+
 ## Deployment Validation
 
 The deployment should be successful if all of the above steps complete without error. You can browse the resources created by navigating to the CloudFormation service in the AWS Console, finding the stack, and browsing its resources.
 
+
 ## Running the Guidance
 
 You can try the demo by following these steps:
-1. Check your email for a temporary password
-2. Access the app from a local browser at #cloud9_public_ip:#web_port
-3. Follow the prompts to log in and change your password
-4. To create a product description from an image (the default mode), browse for an image file for some product or object
-5. Once uploaded, a product description and translations into several languages will be generated
+1. Place your customer reviews json file in the S3 bucket created as part of this solution, which then triggers the lambda function to analyze the reviews.
+2. The review analysis results will be persisted in DynamoDB.
+3. By default, an email notification with the review analysis results of the last 24 hours, will be triggered at 00:00 hrs to the email provided during the stack deployment.
+4. You may update the EventBridge schedule or invoke the notification-lambda lambda function manually to trigger an instant notification. By default the notification-lambda generates review analysis report of current_date-1, so please update it if you are manually invoking Lambda to see current date's analysis.
+5. You may also update the SNS topic (NotificationEmail) to include any new emails/mailing lists you like to receive review analysis results.
+
 
 ## Next Steps
 
