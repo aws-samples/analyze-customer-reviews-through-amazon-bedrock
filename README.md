@@ -84,11 +84,11 @@ The deployment should be successful if all of the above steps complete without e
 ## Running the Guidance
 
 You can try the demo by following these steps:
-1. Place your customer reviews json file in the S3 bucket created as part of this solution, which then triggers the lambda function to analyze the reviews.
-2. The review analysis results will be persisted in DynamoDB.
-3. By default, an email notification with the review analysis results of the last 24 hours, will be triggered at 00:00 hrs to the email provided during the stack deployment.
-4. You may update the EventBridge schedule or invoke the notification-lambda lambda function manually to trigger an instant notification. By default the notification-lambda generates review analysis report of current_date-1, so please update it if you are manually invoking Lambda to see current date's analysis.
-5. You may also update the SNS topic (NotificationEmail) to include any new emails/mailing lists you like to receive review analysis results.
+1. Place your customer reviews json file in the S3 bucket created as part of this solution, which then triggers the lambda function to analyze the reviews. [TennisShoe.json](TennisShoe.json) is an example review json used for testing. If you have additional attributes in the json, update the orchestrator lambda code to meet your schema needs.
+3. The review analysis results will be persisted in DynamoDB.
+4. By default, an email notification with the review analysis results of the last 24 hours, will be triggered at 00:00 hrs to the email provided during the stack deployment.
+5. You may update the EventBridge schedule or invoke the notification-lambda lambda function manually to trigger an instant notification. By default the notification-lambda generates review analysis report of current_date-1, so please update it if you are manually invoking Lambda to see current date's analysis.
+6. You may also update the SNS topic (NotificationEmail) to include any new emails/mailing lists you like to receive review analysis results.
 
 
 ## Next Steps
